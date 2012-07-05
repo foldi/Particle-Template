@@ -1,6 +1,5 @@
 /*global window, PVector, setInterval, document */
 
-
 function setup (App) {
   
 	function getRandomNumber (low, high, flt) {
@@ -14,7 +13,7 @@ function setup (App) {
 		this.width = window.innerWidth;
 	  this.height = window.innerHeight;
 	  this.gravity = PVector.create(0, 0.01);
-	  //this.wind = PVector.create(0.01, 0);
+	  this.wind = PVector.create(0.01, 0);
 	}
 	
 	World.prototype.devicemotion = function () {
@@ -69,7 +68,7 @@ function setup (App) {
     this.scale = 1;
     this.opacity = 1;
     this.life = 0;
-    this.lifeMax = 30;
+    this.lifeMax = 50;
     this.width = 10;
     this.height = 10;
     this.colorMode = "rgb";
@@ -92,7 +91,7 @@ function setup (App) {
     this.step = function (world) {
       
       this.acceleration.add(world.gravity);
-      //this.acceleration.add(world.wind);
+      this.acceleration.add(world.wind);
       this.velocity.add(this.acceleration);
       this.location.add(this.velocity);
     
