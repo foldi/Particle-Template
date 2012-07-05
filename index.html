@@ -15,9 +15,40 @@
 		<script type="text/javascript" src="js/app.js"></script>
 		
 		<script type="text/javascript">
+		
+			function getRandomNumber (low, high, flt) {
+			  if (flt) {
+					return Math.random()*(high-(low-1)) + low;
+				}
+				return Math.floor(Math.random()*(high-(low-1))) + low;
+			}
+			
 			var ready = function () {
-				App = {};
-				setup(App);
+				//App = {};
+				//setup(App);
+				
+				world = new World();
+				ps = new ParticleSystem({
+					World: world
+				});
+				ps.start();
+				var particle = new Particle({
+					World: world,
+					PS: ps
+				});
+		
+				setInterval(function () {
+
+					var particle = new Particle({
+						World: world,
+						PS: ps
+					});
+
+					particle.applyForce(PVector.create(getRandomNumber(-2, 2, true), getRandomNumber(-2, 0, true)));
+					ps.particles.push(particle);
+
+				}, 50);
+				
 			};
 		</script>
 		
