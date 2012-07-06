@@ -1,1 +1,2 @@
-var exports = this;
+App = {};
+var exports = App;
