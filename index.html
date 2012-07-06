@@ -13,6 +13,9 @@
 		
 		<script type="text/javascript" src="js/pvector.min.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/World.js"></script>
+		<script type="text/javascript" src="js/ParticleSystem.js"></script>
+		<script type="text/javascript" src="js/Particle.js"></script>
 		
 		<script type="text/javascript">
 		
@@ -24,11 +27,9 @@
 			}
 			
 			var ready = function () {
-				//App = {};
-				//setup(App);
 				
-				world = new World();
-				ps = new ParticleSystem({
+				var world = new World();
+				var ps = new ParticleSystem({
 					World: world
 				});
 				ps.start();
@@ -53,7 +54,5 @@
 		</script>
 		
 	</head>
-	<body onload="javascript:ready()">
-		<br /><br />
-	</body>
+	<body onload="javascript:ready()"></body>
 </html>
