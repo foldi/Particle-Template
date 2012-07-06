@@ -2,7 +2,10 @@
 	
 	var World = (function () {
 	
-		function World () {
+		function World (options) {
+			
+			var options = options || {};
+			
 			this.width = window.innerWidth;
 		  this.height = window.innerHeight;
 		  this.gravity = PVector.create(0, 0.01);
