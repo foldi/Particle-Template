@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>js</title>
+		<title>Particles</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content = "user-scalable=no, width=device-width, initial-scale=1.0; maximum-scale=1.0;" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -20,44 +20,82 @@
 		<script type="text/javascript" src="js/dat.gui.min.js"></script>
 		
 		<script type="text/javascript">
-		
+			
+			// get stats to toggle
+			
 			var ready = function () {
 				
-				world = new World();
+				exports.worldOptions = {
+					gravityX: 0.01,
+					gravityY: 0.02,
+					framerate: 16
+				};
 				
-				ps = new ParticleSystem({
-					mass: 30,
-					color: [255, 0, 0],
+				exports.particleSystemOptions = {
+					burst: 1
+				};
+				
+				exports.particleOptions = { // !! add className as configurable property
+					scale: 1,
 					opacity: 0.75,
+					lifeMax: window.innerWidth/12,
 					width: 10,
 					height: 10,
+					colorMode: 'rgb',
+					color: [255, 0, 0],
+					mass: 10,
+					className: "smoke",
 					view: function () {
 						var myDiv;
 						myDiv = document.createElement("div"); // create element
-				    myDiv.className = "particle";
 				    myDiv.style.webkitTransform = 'translateX(-5000px) translateY(-5000px) translateZ(0) scaleX(1) scaleY(1)';
 						return myDiv;
 					}
-				});
+				};
+				
+				world = new World();
+				ps = new ParticleSystem();
 				
 				world.start();
 				ps.start();
 	
-				//
-				
-				var gui = new dat.GUI();
-			  gui.add(ps, 'burst', -10, 10).step(1);
-				gui.add(ps, 'scale', 0, 10).step(.1);
-				gui.add(ps, 'opacity', 0, 1).step(.1);
-				gui.add(ps, 'lifeMax', 1, 100).step(1);
-				gui.add(ps, 'width', 1, 100).step(1);
-				gui.add(ps, 'height', 1, 100).step(1);
-				gui.add(ps, 'mass', 1, 100).step(1);
-				gui.add(ps, 'colorMode', ['rgb', 'hsv']);
-				gui.addColor(ps, 'color');
-				
-				// !! need to control gravity, wind and world framerate
-				
+				// DAT GUI
+				if (!isTouchDevice()) {
+					var controller;
+					var gui = new dat.GUI();
+					gui.add(ps, 'burst', -10, 10).step(1);
+					controller = gui.add(exports.worldOptions, 'gravityX', -1, 1).step(.01);
+					controller.onChange(function(value) {
+					  world.gravity.x = value;
+					});
+					controller = gui.add(exports.worldOptions, 'gravityY', -1, 1).step(.01);
+					controller.onChange(function(value) {
+					  world.gravity.y = value;
+					});
+					controller = gui.add(exports.worldOptions, 'framerate', 1, 50).step(1);
+					controller.onChange(function(value) {
+					  world.framerate = value;
+						clearInterval(world.interval);
+						ps.stop();
+					});
+					controller.onFinishChange(function(value) {
+						world.funcRef = world.stepSystem(world.elements, world);
+						world.interval = setInterval(world.funcRef, world.framerate);
+						ps.start();
+					});
+					var f1 = gui.addFolder('Particle Attributes');
+					f1.add(exports.particleOptions, 'scale', 0, 10).step(.1);
+					f1.add(exports.particleOptions, 'opacity', 0, 1).step(.1);
+					f1.add(exports.particleOptions, 'lifeMax', 1, 100).step(1);
+					f1.add(exports.particleOptions, 'width', 1, 100).step(1);
+					f1.add(exports.particleOptions, 'height', 1, 100).step(1);
+					f1.add(exports.particleOptions, 'mass', 1, 100).step(1);
+					f1.add(exports.particleOptions, 'className', ['particle', 'smoke', 'nukes']);
+					f1.addColor(exports.particleOptions, 'color');
+					
+				}
+					
+						
 				//
 				
 				document.addEventListener("keyup", function (e) {
@@ -91,5 +129,5 @@
 		</script>
 		
 	</head>
-	<body onload="javascript:ready()"></body>
+	<body onload="javascript:ready()"><br /></body>
 </html>

@@ -6,9 +6,9 @@ html,body,div,span,applet,object,iframe,h4,h5,h6,p,blockquote,pre,a,abbr,acronym
 /* */
 
 body {
-	background: #f6edd2;
-	background-image: -webkit-radial-gradient(circle, #fefefe, #f6edd2);
-	background-image: -moz-radial-gradient(circle, #fefefe, #f6edd2);
+	background: #000;
+	background-image: -webkit-radial-gradient(circle, #222, #000);
+	background-image: -moz-radial-gradient(circle, #222, #000);
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
@@ -18,7 +18,6 @@ body {
   position: absolute;
   top: 0; left: 0;
   border-radius: 100%;
-	-webkit-transition: 1;
 }
 
 .smoke {
@@ -26,4 +25,11 @@ body {
   top: 0; left: 0;
   border-radius: 100%;
   box-shadow: 0 0 20px 20px rgba(0, 0, 0, .5);
+}
+
+.nukes {
+  position: absolute;
+  top: 0; left: 0;
+  border-radius: 100%;
+	border: 30px dotted #000;
 }

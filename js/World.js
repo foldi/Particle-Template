@@ -5,14 +5,26 @@
 			
 	var World = (function () {
 	
-		function World(opts) {
+		function World() {
 			
-			var options = opts || {};
+			var opts = this.getOptions() || {};
 			
-			this.width = options.width || window.innerWidth;
-		  this.height =  options.height || window.innerHeight;
-		  this.gravity = options.gravity || PVector.create(0, 0.01);
-		  this.wind = options.wind || PVector.create(0, 0);
+			this.width = opts.width || window.innerWidth;
+		  this.height =  opts.height || window.innerHeight;
+		  this.gravity = typeof opts.gravityX !== 'undefined' && typeof opts.gravityY !== 'undefined' ? PVector.create(opts.gravityX, opts.gravityY) : PVector.create(0, 0);
+			this.framerate = opts.framerate || 16;
+			
+			if (window.addEventListener) {
+				var me = this;
+				window.addEventListener("devicemotion", function (e) { // listens for device motion events
+					me.devicemotion.call(me, e);
+				}, false);
+			}
+			
+		}
+		
+		World.prototype.getOptions = function () {
+			return exports.worldOptions;
 		}
 		
 		World.prototype.elements = [];
@@ -35,8 +47,8 @@
 		};
 		
 		World.prototype.start = function () {
-			var funcRef = this.stepSystem(this.elements, this);
-			this.interval = setInterval(funcRef, 16);
+			this.funcRef = this.stepSystem(this.elements, this);
+			this.interval = setInterval(this.funcRef, this.framerate);
 		};
 
 		World.prototype.stop = function () {

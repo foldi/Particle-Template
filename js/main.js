@@ -7,6 +7,16 @@ function getRandomNumber (low, high, flt) {
 	return Math.floor(Math.random()*(high-(low-1))) + low;
 }
 
+function isTouchDevice() {
+   var el = document.createElement('div');
+   el.setAttribute('ongesturestart', 'return;');
+   if(typeof el.ongesturestart == "function"){
+      return true;
+   }else {
+      return false
+   }
+}
+
 function clone (object) {
 	function F() {}
 	F.prototype = object;
@@ -30,6 +40,10 @@ function createStats () {
 };
 
 function destroyStats () {
+	var s = document.getElementById('stats');
 	clearInterval(stats.statsInterval);
-	document.body.removeChild(document.getElementById('stats'));
+	if (s) {
+		document.body.removeChild(s);
+	}
 }
+
