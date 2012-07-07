@@ -1,44 +1,30 @@
+/*global exports, PVector, document */
 (function (exports) {
+	
+	'use strict';
 	
 	var Particle = (function () {
 	
-		function Particle (options) {
+		function Particle(opts) {
 			
-			var options = options || {},
-				myDiv;
+			var i, myDiv, options = opts || {};
 			
-			this.acceleration = PVector.create(0, 0);
-	    this.velocity = PVector.create(0, 0);
-	    this.location = PVector.create(options.World.width/2, options.World.height/2);
-	    this.scale = 1;
-	    this.opacity = 1;
-	    this.life = 0;
-	    this.lifeMax = 50;
-	    this.width = 10;
-	    this.height = 10;
-	    this.colorMode = "rgb";
-	    this.color = {
-	      r: 255,
-	      g: 0,
-	      b: 0
-	    };
-	    this.mass = 10;
+			for (i in options) {
+				if (options.hasOwnProperty(i)) {	
+					this[i] = options[i];
+				}
+			}
 		
-			myDiv = document.createElement("div"); // create element
-	    myDiv.className = "particle";
-	    myDiv.id = "p-" + options.PS.idCount;
-	    myDiv.style.webkitTransform = 'translateX(-5000px) translateY(-5000px) translateZ(0) scaleX(1) scaleY(1)';
-
+			myDiv = options.view();
+			myDiv.id = this.id;
 	    this.el = document.body.appendChild(myDiv);
 
-	    options.PS.idCount += 1;
-	
 		}
 	
-		Particle.prototype.step = function (world) {
+		Particle.prototype.step = function () {
       
-      this.acceleration.add(world.gravity);
-      this.acceleration.add(world.wind);
+      this.acceleration.add(exports.world.gravity);
+      this.acceleration.add(exports.world.wind);
       this.velocity.add(this.acceleration);
       this.location.add(this.velocity);
     
@@ -66,7 +52,7 @@
 	       style.opacity = o;
 	       style.width = w + "px";
 	       style.height = h + "px";
-	       style.background = cm + "(" + c.r + ", " + c.g + ", " + c.b + ")";
+	       style.background = cm + "(" + c[0] + ", " + c[1] + ", " + c[2] + ")";
 
 	    };
 

@@ -1,0 +1,193 @@
+1. Basic Usage
+
+With very little code, dat.GUI creates an interface that you can use to modify variables.
+
+<script type="text/javascript" src="dat.gui.js"></script>
+<script type="text/javascript">
+    
+var FizzyText = function() {
+  this.message = 'dat.gui';
+  this.speed = 0.8;
+  this.displayOutline = false;
+  this.explode = function() { ... };
+  // Define render logic ...
+};
+
+window.onload = function() {
+  var text = new FizzyText();
+  var gui = new dat.GUI();
+  gui.add(text, 'message');
+  gui.add(text, 'speed', -5, 5);
+  gui.add(text, 'displayOutline');
+  gui.add(text, 'explode');
+};
+    
+</script>
+The property must be public, i.e. defined by this.prop = value
+dat.GUI determines controller type based on a property's initial value
+Press H to show/hide all GUI's.
+
+
+2. Constraining Input
+
+You can specify limits on numbers. A number with a min and max value becomes a slider.
+
+gui.add(text, 'noiseStrength').step(5); // Increment amount
+gui.add(text, 'growthSpeed', -5, 5); // Min and max
+gui.add(text, 'maxSize').min(0).step(0.25); // Mix and match
+You can also choose to select from a dropdown of values for both numbers and strings.
+
+// Choose from accepted values
+gui.add(text, 'message', [ 'pizza', 'chrome', 'hooray' ] );
+
+// Choose from named values
+gui.add(text, 'speed', { Stopped: 0, Slow: 0.1, Fast: 5 } );
+
+3. Folders
+
+You can nest as many GUI's as you please. Nested GUI's act as collapsible folders.
+
+var gui = new dat.GUI();
+
+var f1 = gui.addFolder('Flow Field');
+f1.add(text, 'speed');
+f1.add(text, 'noiseStrength');
+
+var f2 = gui.addFolder('Letters');
+f2.add(text, 'growthSpeed');
+f2.add(text, 'maxSize');
+f2.add(text, 'message');
+
+f2.open();
+
+
+4. Color Controllers
+
+dat.GUI has a color selector and understands many different representations of color. The following creates color controllers for color variables of different formats.
+
+var FizzyText = function() {
+
+  this.color1 = "#ffae23"; // CSS string
+  this.color2 = [ 0, 128, 255 ]; // RGB array
+  this.color3 = [ 0, 128, 255, 0.3 ]; // RGB with alpha
+  this.color4 = { h: 350, s: 0.9, v: 0.3 }; // Hue, saturation, value
+
+  // Define render logic ...
+
+};
+
+window.onload = function() {
+
+  var text = new FizzyText();
+  var gui = new dat.GUI();
+
+  gui.addColor(text, 'color0');
+  gui.addColor(text, 'color1');
+  gui.addColor(text, 'color2');
+  gui.addColor(text, 'color3');
+
+};
+dat.GUI will modify colors in the format defined by their initial value.
+
+5. Saving Values
+
+Add a save menu to the GUI interface by calling gui.remember on all the objects you've added to the GUI.
+
+var fizzyText = new FizzyText();
+var gui = new dat.GUI();
+
+gui.remember(fizzyText);
+
+// Add controllers ...
+Click the  icon to change your save settings. You can either save your GUI's values to localStorage, or by copying and pasting a JSON object into your source code as follows:
+
+var fizzyText = new FizzyText();
+var gui = new dat.GUI({ load: JSON });
+
+gui.remember(fizzyText);
+
+// Add controllers ...
+
+
+6. Presets
+
+The save menu also allows you to save all of your settings as presets. Click Save to modify the current preset, or New to create a new preset from existing settings. Clicking Revert will clear all unsaved changes to the current preset.
+
+Switch between presets using the dropdown in the save menu. You can specify the default preset as follows:
+
+var gui = new dat.GUI({
+  load: JSON,
+  preset: 'Flow'
+});
+A word of caution about localStorage:
+
+Paste the JSON save object into your source frequently. Using localStorage to save presets can make you faster, but its easy to lose your settings by clearing browsing data, changing browsers, or even by changing the URL of the page you're working on.
+
+
+
+7. Events
+
+You can listen for events on individual controllers using an event listener syntax.
+
+var controller = gui.add(fizzyText, 'maxSize', 0, 10);
+
+controller.onChange(function(value) {
+  // Fires on every change, drag, keypress, etc.
+});
+
+controller.onFinishChange(function(value) {
+  // Fires when a controller loses focus.
+  alert("The new value is " + value);
+});
+
+8. Custom Placement
+
+By default, dat.GUI panels are created with fixed position, and are automatically appended to a DOM Element of dat.GUI's creation.
+
+You can change this behavior by setting the autoPlace parameter to false.
+
+var gui = new dat.GUI({ autoPlace: false });
+
+var customContainer = document.getElementById('my-gui-container');
+customContainer.appendChild(gui.domElement);
+
+9. Updating the Display Automatically
+
+If you'd like controllers to react to changes made outside of the GUI, use the listen method.
+
+var fizzyText = new FizzyText();
+var gui = new dat.GUI();
+
+gui.add(fizzyText, 'noiseStrength', 0, 100).listen();
+
+var update = function() {
+  requestAnimationFrame(update);
+  fizzyText.noiseStrength = Math.random();
+};
+
+update();
+Calling listen on a controller adds it to an internal interval of dat.GUI's creation. This interval checks for changes to a property's value every frame, so if reading that property is expensive, this can be very slow.
+
+10. Updating the Display Manually
+
+If you'd like to update controllers in a loop of your own definition, use the updateDisplay method.
+
+var fizzyText = new FizzyText();
+var gui = new dat.GUI();
+
+gui.add(fizzyText, 'noiseStrength', 0, 100);
+
+var update = function() {
+
+  requestAnimationFrame(update);
+  fizzyText.noiseStrength = Math.cos(Date.getTime());
+
+  // Iterate over all controllers
+  for (var i in gui.__controllers) {
+    gui.__controllers[i].updateDisplay();
+  }
+
+};
+
+update();
+

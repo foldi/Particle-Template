@@ -16,35 +16,76 @@
 		<script type="text/javascript" src="js/World.js"></script>
 		<script type="text/javascript" src="js/ParticleSystem.js"></script>
 		<script type="text/javascript" src="js/Particle.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+		<script type="text/javascript" src="js/dat.gui.min.js"></script>
 		
 		<script type="text/javascript">
 		
-			function getRandomNumber (low, high, flt) {
-			  if (flt) {
-					return Math.random()*(high-(low-1)) + low;
-				}
-				return Math.floor(Math.random()*(high-(low-1))) + low;
-			}
-			
 			var ready = function () {
 				
-				/*var world = new App.World();
-				var ps = new App.ParticleSystem({
-					World: world
+				world = new World();
+				
+				ps = new ParticleSystem({
+					mass: 30,
+					color: [255, 0, 0],
+					opacity: 0.75,
+					width: 10,
+					height: 10,
+					view: function () {
+						var myDiv;
+						myDiv = document.createElement("div"); // create element
+				    myDiv.className = "particle";
+				    myDiv.style.webkitTransform = 'translateX(-5000px) translateY(-5000px) translateZ(0) scaleX(1) scaleY(1)';
+						return myDiv;
+					}
 				});
+				
+				world.start();
 				ps.start();
-		
-				setInterval(function () {
-
-					var particle = new App.Particle({
-						World: world,
-						PS: ps
-					});
-
-					particle.applyForce(PVector.create(getRandomNumber(-2, 2, true), getRandomNumber(-2, 0, true)));
-					ps.particles.push(particle);
-
-				}, 50);*/
+	
+				//
+				
+				var gui = new dat.GUI();
+			  gui.add(ps, 'burst', -10, 10).step(1);
+				gui.add(ps, 'scale', 0, 10).step(.1);
+				gui.add(ps, 'opacity', 0, 1).step(.1);
+				gui.add(ps, 'lifeMax', 1, 100).step(1);
+				gui.add(ps, 'width', 1, 100).step(1);
+				gui.add(ps, 'height', 1, 100).step(1);
+				gui.add(ps, 'mass', 1, 100).step(1);
+				gui.add(ps, 'colorMode', ['rgb', 'hsv']);
+				gui.addColor(ps, 'color');
+				
+				// !! need to control gravity, wind and world framerate
+				
+				//
+				
+				document.addEventListener("keyup", function (e) {
+				
+					switch (e.keyCode) {
+						case 32: // "space": toggles world step
+							if (world.interval) {
+								world.stop();
+							} else {
+								App.world.start();
+							}
+							break;
+						case 80: // "p": toggles particle system step
+							if (ps.interval) {
+								ps.stop();
+							} else {
+								ps.start();
+							}
+							break;							
+						case 83: // "S"
+							if (typeof stats !== "undefined") {
+								destroyStats();
+							} else {
+								createStats();
+							}
+							break;
+					}
+				}, false);
 				
 			};
 		</script>

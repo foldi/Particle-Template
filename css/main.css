@@ -18,11 +18,12 @@ body {
   position: absolute;
   top: 0; left: 0;
   border-radius: 100%;
+	-webkit-transition: 1;
 }
 
 .smoke {
   position: absolute;
   top: 0; left: 0;
   border-radius: 100%;
-  box-shadow: 0 0 50px 50px rgba(0, 0, 0, .1);
+  box-shadow: 0 0 20px 20px rgba(0, 0, 0, .5);
 }
